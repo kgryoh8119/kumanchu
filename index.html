@@ -53,8 +53,8 @@
   }
 })();
 </script>
-<script type="module" crossorigin src="./assets/index-Cm5RFr00.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-DJyNKcqI.css">
+<script type="module" crossorigin src="./assets/index-BjSLIjDi.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-B3XyxJ1E.css">
 </head>
 <body>
 <div id="stage">
@@ -69,6 +69,9 @@
     <div id="bear-state" title="クマの状態"></div>
   </div>
   <div id="hp-wrap" title="体力"><span class="hp-label">体力</span><div id="hp-bar"><div id="hp-fill"></div></div><span id="hp-num">100</span></div>
+  <div id="bear-hp-wrap" class="hidden" title="クマの体力"><span class="hp-label">クマ</span><div id="bear-hp-bar"><div id="bear-hp-fill"></div></div></div>
+  <div id="view-label">一人称</div>
+  <div id="cine-vignette"></div>
   <div id="danger-vignette"></div>
   <div id="damage-flash"></div>
   <div id="warning-banner"><span id="warning-arrow">▲</span><span id="warning-text">クマに見つかった！</span></div>
@@ -77,7 +80,11 @@
   <div id="toast"></div>
   <div id="sight-label"></div>
   <canvas id="minimap" width="176" height="176"></canvas>
-  <div id="equip-bar"></div>
+  <div id="context-action" class="hidden"></div>
+  <div id="equip-wrap">
+    <div id="equip-cats"></div>
+    <div id="equip-bar"></div>
+  </div>
   <div id="item-info"></div>
   <div id="radio-panel">
     <div class="radio-title">無線 <span id="radio-target">客1</span></div>
@@ -89,19 +96,22 @@
     </div>
   </div>
   <div id="binocular-overlay"></div>
+  <div id="scope-overlay"></div>
 </div>
 
-<!-- Touch controls -->
+<!-- Touch controls: big thumb-arc cluster at the bottom right.
+     Buttons sit above (and outside) the look-drag layer, so dragging the
+     view never rotates while a thumb is on a button. -->
 <div id="touch-ui" class="hidden">
   <div id="joy-base"><div id="joy-knob"></div></div>
   <div id="look-area"></div>
   <div id="touch-btns">
-    <button id="tb-use" type="button">使う</button>
-    <button id="tb-dash" type="button">ダッシュ</button>
-    <button id="tb-crouch" type="button">しゃがみ</button>
-    <button id="tb-equip" type="button">装備</button>
-    <button id="tb-trigger" type="button">遠隔起動</button>
-    <button id="tb-view" type="button">視点</button>
+    <button id="tb-use" class="tbtn main" type="button"><span class="ic">✋</span><span class="lb">使う</span></button>
+    <button id="tb-dash" class="tbtn" type="button"><span class="ic">💨</span><span class="lb">ダッシュ</span></button>
+    <button id="tb-crouch" class="tbtn" type="button"><span class="ic">🦵</span><span class="lb">しゃがみ</span></button>
+    <button id="tb-view" class="tbtn" type="button"><span class="ic">👁</span><span class="lb" id="tb-view-lb">一人称</span></button>
+    <button id="tb-trigger" class="tbtn" type="button"><span class="ic">📡</span><span class="lb">遠隔起動</span></button>
+    <button id="tb-context" class="tbtn wide hidden" type="button"><span class="ic">🍖</span><span class="lb" id="tb-context-lb">回収する</span></button>
   </div>
 </div>
 </div><!-- /#stage -->
@@ -114,11 +124,11 @@
   <div id="controls-help">
     <div class="col">
       <h3>PC</h3>
-      <p>WASD 移動 / マウス 視点<br>Shift ダッシュ / C しゃがみ / V 視点切替（一人称⇔三人称）<br>1〜5 装備切替 / クリック 使用<br>X 遠隔起動 / R 客切替 / G 移動指示 / H 待機指示<br>M 地図拡大</p>
+      <p>WASD 移動 / マウス 視点<br>Shift ダッシュ / C しゃがみ / V 視点切替（一人称→三人称・近→引き）<br>Tab カテゴリ / 1〜6 装備切替 / クリック 使用<br>X 遠隔起動 / R 客切替 / G 移動指示 / H 待機指示<br>F 回収・調理・食べる / M 地図拡大</p>
     </div>
     <div class="col">
       <h3>スマホ（横画面）</h3>
-      <p>左スティック 移動 / 右側ドラッグ 視点<br>ボタンで ダッシュ・しゃがみ・使用・装備・遠隔起動・視点切替<br>無線パネルから客へ指示</p>
+      <p>左スティック 移動 / 右側ドラッグ 視点<br>右下の大きなボタンで 使用・ダッシュ（切替式）・しゃがみ・視点・遠隔起動<br>下のタブ＋スロットで装備切替、無線パネルから客へ指示</p>
     </div>
   </div>
   <p id="upcoming">今後追加予定： ヒグマ / ぬいぐるみクマ / アライグマ / ドデカスーパーヒグマ / 都市部フィールド</p>
