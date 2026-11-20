@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+<title>くまんちゅ</title>
+  <script>
+(function(){
+  var B64 = {
+    'assets/hdri/belfast_sunset_puresky_1k.hdr': 'assets/hdri/belfast_sunset_puresky_1k.hdr.b64',
+    'assets/textures/forest_floor_diff.jpg': 'assets/textures/forest_floor_diff.jpg.b64',
+    'assets/textures/bicolour_gravel_diff.jpg': 'assets/textures/bicolour_gravel_diff.jpg.b64'
+  };
+  function match(url){ if (typeof url !== 'string' || url.indexOf('.b64') !== -1) return null; for (var k in B64){ if (url.indexOf(k) !== -1) return B64[k]; } return null; }
+  function decode(b64){
+    var bin = atob(b64.replace(/\s+/g,''));
+    var bytes = new Uint8Array(bin.length);
+    for (var i=0;i<bin.length;i++) bytes[i]=bin.charCodeAt(i);
+    return bytes;
+  }
+  var origFetch = window.fetch.bind(window);
+  var cache = {};
+  function loadBytes(b64rel){
+    var u = new URL(b64rel, document.baseURI).href;
+    if (!cache[u]) cache[u] = origFetch(u).then(function(r){ return r.text(); }).then(decode);
+    return cache[u];
+  }
+  window.fetch = function(input, init){
+    var url = typeof input === 'string' ? input : (input && input.url) || '';
+    var b = match(url);
+    if (b) {
+      return loadBytes(b).then(function(bytes){
+        return new Response(bytes.buffer, {status:200, headers:{'Content-Type':'application/octet-stream'}});
+      });
+    }
+    return origFetch(input, init);
+  };
+  var proto = HTMLImageElement.prototype;
+  var desc = Object.getOwnPropertyDescriptor(proto, 'src');
+  if (desc && desc.set) {
+    Object.defineProperty(proto, 'src', {
+      configurable: true, enumerable: desc.enumerable, get: desc.get,
+      set: function(value){
+        var b = match(value);
+        if (b) {
+          var img = this;
+          loadBytes(b).then(function(bytes){
+            desc.set.call(img, URL.createObjectURL(new Blob([bytes], {type:'image/jpeg'})));
+          }).catch(function(){ desc.set.call(img, value); });
+        } else { desc.set.call(this, value); }
+      }
+    });
+  }
+})();
+</script>
+<script type="module" crossorigin src="./assets/index-Cm5RFr00.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-DJyNKcqI.css">
+</head>
+<body>
+<div id="stage">
+<div id="app"></div>
+
+<!-- HUD -->
+<div id="hud" class="hidden">
+  <div id="topbar">
+    <div id="mission-status">客 0/3 避難 ・ クマ 区域内</div>
+    <div id="timer">00:00</div>
+    <span id="bear-dot" class="bear-dot dot-unaware" title="クマの状態"></span>
+    <div id="bear-state" title="クマの状態"></div>
+  </div>
+  <div id="hp-wrap" title="体力"><span class="hp-label">体力</span><div id="hp-bar"><div id="hp-fill"></div></div><span id="hp-num">100</span></div>
+  <div id="danger-vignette"></div>
+  <div id="damage-flash"></div>
+  <div id="warning-banner"><span id="warning-arrow">▲</span><span id="warning-text">クマに見つかった！</span></div>
+  <div id="attack-banner"><div id="attack-text">クマに薙ぎ倒された！</div><div id="attack-sub"></div></div>
+  <div id="crosshair"></div>
+  <div id="toast"></div>
+  <div id="sight-label"></div>
+  <canvas id="minimap" width="176" height="176"></canvas>
+  <div id="equip-bar"></div>
+  <div id="item-info"></div>
+  <div id="radio-panel">
+    <div class="radio-title">無線 <span id="radio-target">客1</span></div>
+    <div id="guest-chips"></div>
+    <div class="radio-btns">
+      <button id="btn-order-move" type="button">移動</button>
+      <button id="btn-order-wait" type="button">待機</button>
+      <button id="btn-order-all" type="button">全員移動</button>
+    </div>
+  </div>
+  <div id="binocular-overlay"></div>
+</div>
+
+<!-- Touch controls -->
+<div id="touch-ui" class="hidden">
+  <div id="joy-base"><div id="joy-knob"></div></div>
+  <div id="look-area"></div>
+  <div id="touch-btns">
+    <button id="tb-use" type="button">使う</button>
+    <button id="tb-dash" type="button">ダッシュ</button>
+    <button id="tb-crouch" type="button">しゃがみ</button>
+    <button id="tb-equip" type="button">装備</button>
+    <button id="tb-trigger" type="button">遠隔起動</button>
+    <button id="tb-view" type="button">視点</button>
+  </div>
+</div>
+</div><!-- /#stage -->
+
+<!-- Title -->
+<div id="title-screen">
+  <h1>くまんちゅ</h1>
+  <p class="sub">夕暮れのキャンプ場 — 客3人を避難させ、クマを区域外へ誘導せよ</p>
+  <button id="btn-start" type="button">任務開始</button>
+  <div id="controls-help">
+    <div class="col">
+      <h3>PC</h3>
+      <p>WASD 移動 / マウス 視点<br>Shift ダッシュ / C しゃがみ / V 視点切替（一人称⇔三人称）<br>1〜5 装備切替 / クリック 使用<br>X 遠隔起動 / R 客切替 / G 移動指示 / H 待機指示<br>M 地図拡大</p>
+    </div>
+    <div class="col">
+      <h3>スマホ（横画面）</h3>
+      <p>左スティック 移動 / 右側ドラッグ 視点<br>ボタンで ダッシュ・しゃがみ・使用・装備・遠隔起動・視点切替<br>無線パネルから客へ指示</p>
+    </div>
+  </div>
+  <p id="upcoming">今後追加予定： ヒグマ / ぬいぐるみクマ / アライグマ / ドデカスーパーヒグマ / 都市部フィールド</p>
+  <p id="asset-note"></p>
+</div>
+
+<!-- Result -->
+<div id="result-screen" class="hidden">
+  <h2 id="result-title">任務完了</h2>
+  <p id="result-detail"></p>
+  <canvas id="result-map" width="520" height="520"></canvas>
+  <div id="result-legend">― 自分　― クマ　● 装置作動地点</div>
+  <button id="btn-retry" type="button">同条件でリトライ</button>
+</div>
+
+<div id="rotate-overlay"><div>📱 横画面にしてください<br><small>（タッチ端末では自動で横画面表示に回転します）</small></div></div>
+
+</body>
+</html>
