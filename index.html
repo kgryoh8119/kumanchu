@@ -9,7 +9,11 @@
   var B64 = {
     'assets/hdri/belfast_sunset_puresky_1k.hdr': 'assets/hdri/belfast_sunset_puresky_1k.hdr.b64',
     'assets/textures/forest_floor_diff.jpg': 'assets/textures/forest_floor_diff.jpg.b64',
-    'assets/textures/bicolour_gravel_diff.jpg': 'assets/textures/bicolour_gravel_diff.jpg.b64'
+    'assets/textures/bicolour_gravel_diff.jpg': 'assets/textures/bicolour_gravel_diff.jpg.b64',
+    'assets/models/bear.glb': 'assets/models/bear.glb.b64',
+    'assets/models/guest.glb': 'assets/models/guest.glb.b64',
+    'assets/models/shotgun.glb': 'assets/models/shotgun.glb.b64',
+    'assets/models/sniper.glb': 'assets/models/sniper.glb.b64'
   };
   function match(url){ if (typeof url !== 'string' || url.indexOf('.b64') !== -1) return null; for (var k in B64){ if (url.indexOf(k) !== -1) return B64[k]; } return null; }
   function decode(b64){
@@ -53,8 +57,8 @@
   }
 })();
 </script>
-<script type="module" crossorigin src="./assets/index-BjSLIjDi.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-B3XyxJ1E.css">
+  <script type="module" crossorigin src="./assets/index-e57k9rcv.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-BdqWPLK7.css">
 </head>
 <body>
 <div id="stage">
@@ -69,6 +73,9 @@
     <div id="bear-state" title="クマの状態"></div>
   </div>
   <div id="hp-wrap" title="体力"><span class="hp-label">体力</span><div id="hp-bar"><div id="hp-fill"></div></div><span id="hp-num">100</span></div>
+  <div id="objective-line">目的：客3人を避難させ、クマを処理する（誘導／捕獲／狩猟）</div>
+  <button id="btn-end-mission" type="button">任務を終了して結果を見る</button>
+  <div id="objective-banner"><div id="objective-text">クマを仕留めた！</div><div id="objective-sub"></div></div>
   <div id="bear-hp-wrap" class="hidden" title="クマの体力"><span class="hp-label">クマ</span><div id="bear-hp-bar"><div id="bear-hp-fill"></div></div></div>
   <div id="view-label">一人称</div>
   <div id="cine-vignette"></div>
@@ -121,14 +128,15 @@
   <h1>くまんちゅ</h1>
   <p class="sub">夕暮れのキャンプ場 — 客3人を避難させ、クマを区域外へ誘導せよ</p>
   <button id="btn-start" type="button">任務開始</button>
+  <button id="btn-quality" type="button">画質：高（ポストプロセス有効）</button>
   <div id="controls-help">
     <div class="col">
       <h3>PC</h3>
-      <p>WASD 移動 / マウス 視点<br>Shift ダッシュ / C しゃがみ / V 視点切替（一人称→三人称・近→引き）<br>Tab カテゴリ / 1〜6 装備切替 / クリック 使用<br>X 遠隔起動 / R 客切替 / G 移動指示 / H 待機指示<br>F 回収・調理・食べる / M 地図拡大</p>
+      <p>WASD 移動 / マウス 視点<br>Shift ダッシュ / C しゃがみ / V 視点切替（一人称→三人称・近→引き）<br>Tab カテゴリ / 1〜6 装備切替 / クリック 使用<br>X 遠隔起動 / R 客切替 / G 移動指示 / H 待機指示<br>F 回収・調理・食べる / M 地図拡大 / L 任務終了</p>
     </div>
     <div class="col">
       <h3>スマホ（横画面）</h3>
-      <p>左スティック 移動 / 右側ドラッグ 視点<br>右下の大きなボタンで 使用・ダッシュ（切替式）・しゃがみ・視点・遠隔起動<br>下のタブ＋スロットで装備切替、無線パネルから客へ指示</p>
+      <p>左側の好きな場所に触れるとスティックが出ます（移動）/ 右側ドラッグ 視点<br>右下の大きなボタンで 使用・ダッシュ（切替式）・しゃがみ・視点・遠隔起動<br>下のタブ＋スロットで装備切替、無線パネルから客へ指示</p>
     </div>
   </div>
   <p id="upcoming">今後追加予定： ヒグマ / ぬいぐるみクマ / アライグマ / ドデカスーパーヒグマ / 都市部フィールド</p>
