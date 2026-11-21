@@ -57,8 +57,8 @@
   }
 })();
 </script>
-  <script type="module" crossorigin src="./assets/index-e57k9rcv.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-BdqWPLK7.css">
+<script type="module" crossorigin src="./assets/index-DxuHjk8O.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-DBDFbCRK.css">
 </head>
 <body>
 <div id="stage">
@@ -89,10 +89,10 @@
   <canvas id="minimap" width="176" height="176"></canvas>
   <div id="context-action" class="hidden"></div>
   <div id="equip-wrap">
+    <div id="item-info"></div>
     <div id="equip-cats"></div>
     <div id="equip-bar"></div>
   </div>
-  <div id="item-info"></div>
   <div id="radio-panel">
     <div class="radio-title">無線 <span id="radio-target">客1</span></div>
     <div id="guest-chips"></div>
@@ -101,6 +101,7 @@
       <button id="btn-order-wait" type="button">待機</button>
       <button id="btn-order-all" type="button">全員移動</button>
     </div>
+    <div id="guide-line" title="選択中の客の方向（自分から）と、管理棟までの残り距離"><span id="guide-arrow">▲</span><span id="guide-text">客1：管理棟まで あと--m</span></div>
   </div>
   <div id="binocular-overlay"></div>
   <div id="scope-overlay"></div>
@@ -129,6 +130,12 @@
   <p class="sub">夕暮れのキャンプ場 — 客3人を避難させ、クマを区域外へ誘導せよ</p>
   <button id="btn-start" type="button">任務開始</button>
   <button id="btn-quality" type="button">画質：高（ポストプロセス有効）</button>
+  <div id="howto">
+    <h3>遊び方（避難のさせ方）</h3>
+    <p>① 右上の無線パネルで客を選び「移動」を押すと、その客が管理棟へ歩き出す（「全員移動」なら全員いっぺんに）<br>
+    ② クマが客に近づくと、客は勝手に悲鳴を上げて管理棟の方へ逃げる。クマは音の出る装置や武器で誘導・足止め・処理できる<br>
+    ③ 客全員が管理棟のドアに着けば避難完了。クマの処理（区域外へ誘導／捕獲／狩猟）と両方そろえば任務完了</p>
+  </div>
   <div id="controls-help">
     <div class="col">
       <h3>PC</h3>
